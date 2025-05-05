@@ -18,15 +18,15 @@ A smart AI-powered chatbot built with FastAPI and Streamlit that helps customers
 ## 🏗️ Project Structure
 
 kb-search-app/ │
-  ├── backend/ 
-    │ ├── main.py # FastAPI app │
-  ├── utils.py # Helper functions (embedding, search) │
-  ├── data/ │
-      │ ├── free_faiss_index.index │ 
-      │ └── free_ticket_data.json │ 
-  ├── frontend/ 
-    │ └── app.py # Streamlit frontend app 
-  │--├── cleaned_dataset.json # Original dataset (input/output pairs)
+    ├── backend/ 
+      │ ├── main.py # FastAPI app │
+    ├── utils.py # Helper functions (embedding, search) │
+    ├── data/ │
+        │ ├── free_faiss_index.index │ 
+        │ └── free_ticket_data.json │ 
+    ├── frontend/ 
+        │ └── app.py # Streamlit frontend app 
+  │ ├── cleaned_dataset.json # Original dataset (input/output pairs)
   ├── requirements.txt # Python dependencies └── README.md # Project documentation
 ---
 
