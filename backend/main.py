@@ -7,23 +7,26 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 
-base_dir = os.path.dirname(__file__)
-index_path = os.path.join(base_dir, "data", "free_faiss_index.index")
-index = faiss.read_index(index_path)
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
+INDEX_PATH = os.path.join(ROOT_DIR, "data", "free_faiss_index.index")
+DATA_PATH = os.path.join(ROOT_DIR, "data", "free_ticket_data.json")
+
+
+# index_path = os.path.join(base_dir, "data", "free_faiss_index.index")
+# index = faiss.read_index(index_path)
+# print ("index file path" + index_path) 
 # Load model and FAISS index
 model = SentenceTransformer('all-MiniLM-L6-v2')
 # index = faiss.read_index("../data/free_faiss_index.index")
-index = faiss.read_index(index_path)
+index = faiss.read_index(INDEX_PATH)
 
-# Get absolute path to the current file's directory
-base_dir = os.path.dirname(os.path.abspath(__file__))
+
 
 # Construct full path to the data file
-file_path = os.path.join(base_dir, "data", "free_ticket_data.json")
-
 # Load dataset
-with open(file_path, "r", encoding="utf-8") as f:
+with open(DATA_PATH, "r", encoding="utf-8") as f:
     data = json.load(f)
 
 # Prepare texts and responses
