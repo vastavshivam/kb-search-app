@@ -6,6 +6,7 @@ import json
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
+import re
 
 # Initialize FastAPI
 app = FastAPI()
@@ -48,6 +49,10 @@ SMALL_TALK_RESPONSES = {
     "how are you": "I'm just a bot, but I'm always ready to help!"
 }
 
+
+def normalize(text):
+    # Lowercase, remove punctuation, and trim whitespace
+    return re.sub(r'[^\w\s]', '', text.lower().strip())
 # Request model
 class ChatRequest(BaseModel):
     message: str
@@ -74,7 +79,7 @@ def search_tickets(query: str = Query(..., description="Complaint text"), top_k:
 # Chat API
 @app.post("/chat")
 def chat(req: ChatRequest):
-    msg = req.message.strip().lower()
+    msg = (normalize(req)).message.strip().lower()
     print (msg)
 
     if req.state == "initial":
