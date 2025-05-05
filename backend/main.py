@@ -41,8 +41,8 @@ app.add_middleware(
 
 # Handle small talk / static questions
 SMALL_TALK_RESPONSES = {
-    "what is your name": "Hello! I'm AppG, your virtual assistant here to help with support-related queries.",
-    "who are you": "I'm AppG, your helpful support assistant.",
+    "what is your name ?": "Hello! I'm AppG, your virtual assistant here to help with support-related queries.",
+    "who are you ?": "I'm AppG, your helpful support assistant.",
     "hi": "Hi there! How can I help you today?",
     "hello": "Hello! I’m AppG. What can I assist you with?",
     "how are you": "I'm just a bot, but I'm always ready to help!"
