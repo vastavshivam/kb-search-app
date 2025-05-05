@@ -17,7 +17,7 @@ if st.button(":mag: Search Suggested Responses"):
                     "message": complaint,
                     "state": "initial"
                 }
-                # response = requests.post("http://localhost:8000/chat", json=payload)https://kb-search-app.onrender.com
+                # response = requests.post("http://localhost:8000/chat", json=payload)#https://kb-search-app.onrender.com
                 response = requests.post("https://kb-search-app.onrender.com/chat", json=payload)
                 response.raise_for_status()  # Raise exception for non-200 errors
 

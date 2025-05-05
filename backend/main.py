@@ -7,24 +7,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 
+# Initialize FastAPI
+app = FastAPI()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
 INDEX_PATH = os.path.join(ROOT_DIR, "data", "free_faiss_index.index")
 DATA_PATH = os.path.join(ROOT_DIR, "data", "free_ticket_data.json")
-
-
-# index_path = os.path.join(base_dir, "data", "free_faiss_index.index")
-# index = faiss.read_index(index_path)
-# print ("index file path" + index_path) 
-# Load model and FAISS index
 model = SentenceTransformer('all-MiniLM-L6-v2')
 # index = faiss.read_index("../data/free_faiss_index.index")
 index = faiss.read_index(INDEX_PATH)
 
-
-
-# Construct full path to the data file
 # Load dataset
 with open(DATA_PATH, "r", encoding="utf-8") as f:
     data = json.load(f)
@@ -36,8 +29,7 @@ responses = [d["response_text"] for d in data]
 # Define greetings
 greetings = {"hi", "hello", "hey", "good morning", "good evening"}
 
-# Initialize FastAPI
-app = FastAPI()
+
 
 # Enable CORS for frontend
 app.add_middleware(
@@ -46,6 +38,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Handle small talk / static questions
+SMALL_TALK_RESPONSES = {
+    "what is your name": "Hello! I'm AppG, your virtual assistant here to help with support-related queries.",
+    "who are you": "I'm AppG, your helpful support assistant.",
+    "hi": "Hi there! How can I help you today?",
+    "hello": "Hello! I’m AppG. What can I assist you with?",
+    "how are you": "I'm just a bot, but I'm always ready to help!"
+}
 
 # Request model
 class ChatRequest(BaseModel):
@@ -74,6 +75,7 @@ def search_tickets(query: str = Query(..., description="Complaint text"), top_k:
 @app.post("/chat")
 def chat(req: ChatRequest):
     msg = req.message.strip().lower()
+    print (msg)
 
     if req.state == "initial":
         if any(greet in msg for greet in greetings):
@@ -81,6 +83,13 @@ def chat(req: ChatRequest):
                 "reply": "Hello! How can I assist you today?",
                 "state": "waiting_for_issue"
             }
+        elif msg in SMALL_TALK_RESPONSES:
+            print ("elif is true")
+            return {                
+                "reply": SMALL_TALK_RESPONSES[msg],
+                "state": "waiting_for_issue",                
+                
+        }
         else:
             return process_query(req.message)
 
