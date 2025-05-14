@@ -1,0 +1,26 @@
+[
+  {
+    "ticket_id": "1947",
+    "complaint": "1947",
+    "response": "1947",
+    "similarity": 0.0,
+    "feedback": true,
+    "timestamp": "2025-05-06T12:26:34.101502"
+  },
+  {
+    "ticket_id": "nwew ",
+    "complaint": "ticket",
+    "response": "hear",
+    "similarity": 0.0,
+    "feedback": true,
+    "timestamp": "2025-05-06T12:26:34.101502"
+  },
+  {
+    "ticket_id": "nwew2",
+    "complaint": "ticket2",
+    "response": "hear2",
+    "similarity": 0.0,
+    "feedback": true,
+    "timestamp": "2025-05-06T12:26:34.101502"
+  }
+]

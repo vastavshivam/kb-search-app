@@ -1,12 +1,18 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Request
 from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
 import json
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime
 import os
+import sys
 import re
+import sqlite3 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from data.myconn import get_db;
 
 # Initialize FastAPI
 app = FastAPI()
@@ -40,10 +46,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class Feedback(BaseModel):
+    ticket_id: str
+    complaint: str
+    response: str
+    similarity: float
+    feedback: bool  # True = 👍, False = 👎
+    timestamp: Optional[str] = datetime.utcnow().isoformat()
+
 # Handle small talk / static questions
 SMALL_TALK_RESPONSES = {
-    "what is your name ?": "Hello! I'm AppG, your virtual assistant here to help with support-related queries.",
-    "who are you ?": "I'm AppG, your helpful support assistant.",
+    "what is your name": "Hello! I'm AppG, your virtual assistant here to help with support-related queries.",
+    "who are you": "I'm AppG, your helpful support assistant.",
     "hi": "Hi there! How can I help you today?",
     "hello": "Hello! I’m AppG. What can I assist you with?",
     "how are you": "I'm just a bot, but I'm always ready to help!"
@@ -79,21 +93,17 @@ def search_tickets(query: str = Query(..., description="Complaint text"), top_k:
 # Chat API
 @app.post("/chat")
 def chat(req: ChatRequest):
-    msg = (normalize(req)).message.strip().lower()
+    msg = req.message.strip().lower()
+    msg= normalize(msg)
     print (msg)
+    print (req.state)
 
     if req.state == "initial":
-        if any(greet in msg for greet in greetings):
-            return {
-                "reply": "Hello! How can I assist you today?",
-                "state": "waiting_for_issue"
-            }
-        elif msg in SMALL_TALK_RESPONSES:
+        if msg in SMALL_TALK_RESPONSES:
             print ("elif is true")
             return {                
                 "reply": SMALL_TALK_RESPONSES[msg],
-                "state": "waiting_for_issue",                
-                
+                "state": "waiting_for_issue", 
         }
         else:
             return process_query(req.message)
@@ -131,6 +141,65 @@ def process_query(query):
             "state": "waiting_for_issue",
             "results": []
         }
+    
+@app.post("/feedback")
+def receive_feedback(fb: Feedback):
+    feedback_path = os.path.join(ROOT_DIR, "data", "feedback_log.json")
+    print(feedback_path)
+
+    # Load existing feedback log
+    if os.path.exists(feedback_path):
+        with open(feedback_path, "r", encoding="utf-8") as f:
+            feedback_data = json.load(f)
+    else:
+        feedback_data = []
+
+    # Append new feedback
+    feedback_data.append(fb.model_dump())
+
+    # Save updated feedback log
+    with open(feedback_path, "w", encoding="utf-8") as f:
+        json.dump(feedback_data, f, indent=2)
+
+    return {"message": "Feedback received successfully"}
+# //lite database 
+
+class FeedbackLite(BaseModel):
+    complaint: str
+    response: str
+    similarity: float
+    relevant: bool
+
+@app.post("/feedback_lite")
+def store_feedback(feedback: FeedbackLite):
+    # conn = sqlite3.connect("feedback.db")
+    # cursor = conn.cursor(),
+    conn, cursor = get_db()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS feedback (
+                   id INT AUTO_INCREMENT PRIMARY KEY,
+                   complaint TEXT,
+                   response TEXT,
+                   similarity REAL,
+                   relevant BOOLEAN,
+                   timestamp TEXT
+                   )
+                   """)
+    cursor.execute("""
+        INSERT INTO feedback (complaint, response, similarity, relevant, timestamp)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (feedback.complaint, feedback.response, feedback.similarity, feedback.relevant, datetime.now().isoformat()))
+    conn.commit()
+    conn.close()
+    return {"message": "Feedback stored successfully"}
+
+
+@app.post("/retrain")
+def retrain_index():
+    import subprocess
+    subprocess.run(["python", "retrain_index.py"])
+    return {"message": "Retraining triggered"}
+
 
 # Entry point to run app
 if __name__ == "__main__":
