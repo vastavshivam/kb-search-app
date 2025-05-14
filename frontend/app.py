@@ -18,8 +18,8 @@ if st.button(":mag: Search Suggested Responses"):
                     "message": complaint,
                     "state": "initial"
                 }
-                response = requests.post("http://localhost:8000/chat", json=payload)
-                # response = requests.post("https://kb-search-app.onrender.com/chat", json=payload)
+                # response = requests.post("http://localhost:8000/chat", json=payload)
+                response = requests.post("https://kb-search-app.onrender.com/chat", json=payload)
                 response.raise_for_status()
 
                 response_data = response.json()
