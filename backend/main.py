@@ -12,7 +12,7 @@ import sys
 import re
 import sqlite3 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from data.myconn import get_db;
+# from data.myconn import get_db;
 
 # Initialize FastAPI
 app = FastAPI()
