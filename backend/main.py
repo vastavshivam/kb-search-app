@@ -170,11 +170,34 @@ class FeedbackLite(BaseModel):
     similarity: float
     relevant: bool
 
+# @app.post("/feedback_mysql")
+# def store_feedback(feedback: FeedbackLite):
+#     # conn = sqlite3.connect("feedback.db")
+#     # cursor = conn.cursor(),
+#     conn, cursor = get_db()
+#     cursor.execute("""
+#         CREATE TABLE IF NOT EXISTS feedback (
+#                    id INT AUTO_INCREMENT PRIMARY KEY,
+#                    complaint TEXT,
+#                    response TEXT,
+#                    similarity REAL,
+#                    relevant BOOLEAN,
+#                    timestamp TEXT
+#                    )
+#                    """)
+#     cursor.execute("""
+#         INSERT INTO feedback (complaint, response, similarity, relevant, timestamp)
+#         VALUES (%s, %s, %s, %s, %s)
+#     """, (feedback.complaint, feedback.response, feedback.similarity, feedback.relevant, datetime.now().isoformat()))
+#     conn.commit()
+#     conn.close()
+#     return {"message": "Feedback stored successfully"}
+
 @app.post("/feedback_lite")
 def store_feedback(feedback: FeedbackLite):
-    # conn = sqlite3.connect("feedback.db")
-    # cursor = conn.cursor(),
-    conn, cursor = get_db()
+    conn = sqlite3.connect("feedback.db")
+    cursor = conn.cursor(),
+    # conn, cursor = get_db()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS feedback (
                    id INT AUTO_INCREMENT PRIMARY KEY,
