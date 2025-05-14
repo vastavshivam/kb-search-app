@@ -210,7 +210,7 @@ def store_feedback(feedback: FeedbackLite):
                    """)
     cursor.execute("""
         INSERT INTO feedback (complaint, response, similarity, relevant, timestamp)
-        VALUES (%s, %s, %s, %s, %s)
+        VALUES (?, ?,?,?, ?)
     """, (feedback.complaint, feedback.response, feedback.similarity, feedback.relevant, datetime.now().isoformat()))
     conn.commit()
     conn.close()
