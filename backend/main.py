@@ -196,7 +196,7 @@ class FeedbackLite(BaseModel):
 @app.post("/feedback_lite")
 def store_feedback(feedback: FeedbackLite):
     conn = sqlite3.connect("feedback.db")
-    cursor = conn.cursor(),
+    cursor = conn.cursor()
     # conn, cursor = get_db()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS feedback (
