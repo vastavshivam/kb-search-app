@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 
-st.set_page_config(page_title="Appgallop Support Ticket Search", layout="centered")
+st.set_page_config(page_title="Appgallop Support Ticket Search Developer by Shivam ", layout="centered")
 st.title("Appgallop Customer Support Assistant :mag_right:")
 
 complaint = st.text_area("Enter new customer complaint:")
