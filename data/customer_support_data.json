@@ -9,7 +9,9 @@
         "complaint_subtype": "293|Complaint related to portal",
         "ext_ref_no": "{prodFamily:APPGALLOP,probType:RITM,suppPlan:0,complaintSubSubType:302|Unable to receive emails }",
         "response_text": "Assign Ticket to L1 Resolver Group"
+        
     },
+    useri d
     {
         "response_id": "212",
         "ticket_id": "100",
